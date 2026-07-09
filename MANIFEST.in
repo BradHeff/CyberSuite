@@ -3,3 +3,5 @@ include README.md
 include requirements.txt
 include pyproject.toml
 recursive-include packaging *
+recursive-exclude packaging *.AppImage
+prune packaging/appimage/AppDir

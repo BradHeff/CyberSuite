@@ -18,7 +18,18 @@ cp "dist/cybersuite-${ver}.tar.gz" "$top/SOURCES/"
 cp "$here/cybersuite.spec" "$top/SPECS/"
 
 echo ">> running rpmbuild"
-rpmbuild --define "_topdir $top" -ba "$top/SPECS/cybersuite.spec"
+# Plain rpmbuild only CHECKS build deps (it won't install the dynamic ones that
+# %pyproject_buildrequires generates, e.g. setuptools>=61). If it fails on
+# "Failed build dependencies", install them first with:
+#     sudo dnf builddep packaging/rpm/cybersuite.spec
+if ! rpmbuild --define "_topdir $top" -ba "$top/SPECS/cybersuite.spec"; then
+    echo >&2
+    echo "ERROR: rpmbuild failed. If it was 'Failed build dependencies', run:" >&2
+    echo "    sudo dnf builddep $here/cybersuite.spec" >&2
+    echo "  (or: sudo dnf install python3-setuptools python3-wheel python3-pip)" >&2
+    echo "then re-run 'make rpm'." >&2
+    exit 1
+fi
 
 find "$top/RPMS" "$top/SRPMS" -name '*.rpm' -exec cp -v {} "$root/" \;
 echo ">> RPM(s) copied to $root"

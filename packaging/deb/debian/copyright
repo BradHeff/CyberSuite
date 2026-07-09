@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: CyberSuite
-Source: https://github.com/bheffernan/CyberSuite
+Source: https://github.com/BradHeff/CyberSuite
 
 Files: *
 Copyright: 2026 Brad Heffernan <brad.heffernan83@outlook.com>

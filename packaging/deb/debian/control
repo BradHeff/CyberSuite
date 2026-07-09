@@ -7,7 +7,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-all,
                python3-setuptools
 Standards-Version: 4.6.2
-Homepage: https://github.com/bheffernan/CyberSuite
+Homepage: https://github.com/BradHeff/CyberSuite
 Rules-Requires-Root: no
 
 Package: cybersuite
