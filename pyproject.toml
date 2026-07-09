@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cybersuite"
+version = "1.0.0"
+description = "One-click, zero-dependency network security auditor (GUI + CLI)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Brad Heffernan", email = "brad.heffernan83@outlook.com" }]
+keywords = ["security", "audit", "network", "scanner", "cve", "firewall", "tls"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: X11 Applications",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Monitoring",
+]
+
+# The tool runs on the standard library alone. ttkbootstrap only enables the
+# modern themed GUI; without it the GUI falls back to plain ttk.
+[project.optional-dependencies]
+gui = ["ttkbootstrap>=1.10"]
+
+[project.urls]
+Homepage = "https://github.com/bheffernan/CyberSuite"
+
+# A console entry point and a GUI entry point (same callable; main() picks GUI
+# by default and --cli for the terminal).
+[project.scripts]
+cybersuite = "cybersuite.__main__:main"
+
+[project.gui-scripts]
+cybersuite-gui = "cybersuite.__main__:main"
+
+[tool.setuptools]
+packages = ["cybersuite", "cybersuite.checks"]

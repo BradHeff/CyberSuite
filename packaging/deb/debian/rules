@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+# Build CyberSuite as a Debian package using pybuild (pyproject/setuptools).
+
+export PYBUILD_NAME = cybersuite
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild

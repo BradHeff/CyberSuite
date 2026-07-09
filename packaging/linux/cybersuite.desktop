@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=CyberSuite
+GenericName=Network Security Auditor
+Comment=One-click network security auditor for your own machine and LAN
+Exec=cybersuite
+Icon=cybersuite
+Terminal=false
+Categories=System;Security;
+Keywords=security;audit;network;scan;cve;firewall;tls;
+StartupNotify=true

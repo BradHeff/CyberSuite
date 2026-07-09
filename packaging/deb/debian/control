@@ -1,0 +1,30 @@
+Source: cybersuite
+Section: admin
+Priority: optional
+Maintainer: Brad Heffernan <brad.heffernan83@outlook.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-setuptools
+Standards-Version: 4.6.2
+Homepage: https://github.com/bheffernan/CyberSuite
+Rules-Requires-Root: no
+
+Package: cybersuite
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-tk
+Recommends: python3-ttkbootstrap
+Description: one-click network security auditor (GUI + CLI)
+ CyberSuite is a zero-dependency, cross-platform network security auditor for a
+ solo administrator running checks over their own network. It scans this machine
+ and the local network for common security holes and prints concrete
+ recommendations to fix each finding.
+ .
+ Checks include local host hardening, host firewall status, network discovery,
+ TCP port scanning, insecure-service auditing, banner-based CVE matching, TLS
+ certificate/protocol auditing, and opt-in internal gateway/router tests
+ (hard-limited to private RFC1918 addresses).
+ .
+ It ships a one-click tkinter GUI and a headless CLI for scheduled runs.

@@ -1,0 +1,9 @@
+# CyberSuite runs on the Python standard library alone.
+#
+# ttkbootstrap is OPTIONAL: it enables the modern themed GUI (including the
+# 'heffelhoffui' theme). If it is not installed, the GUI automatically falls
+# back to plain ttk using the same color palette — nothing breaks.
+#
+#   pip install -r requirements.txt
+#
+ttkbootstrap>=1.10
