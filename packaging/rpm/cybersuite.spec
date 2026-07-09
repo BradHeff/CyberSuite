@@ -6,13 +6,16 @@ Release:        1%{?dist}
 Summary:        One-click network security auditor (GUI + CLI)
 
 License:        GPL-3.0-or-later
-URL:            https://github.com/bheffernan/CyberSuite
+URL:            https://github.com/BradHeff/CyberSuite
 Source0:        %{pypi_name}-%{version}.tar.gz
 
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  pyproject-rpm-macros
 BuildRequires:  desktop-file-utils
+# Needed so %%pyproject_check_import can import cybersuite.gui (it does
+# `import tkinter` at module top); importing does not require a display.
+BuildRequires:  python3-tkinter
 
 Requires:       python3
 Requires:       python3-tkinter

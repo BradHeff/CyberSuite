@@ -13,6 +13,9 @@ VERSION := $(shell python3 -c 'import cybersuite; print(cybersuite.__version__)'
 
 all: sdist
 
+# Scripts are invoked via `bash` (not executed directly) so the build works even
+# when the repo lives on a filesystem that can't store the exec bit (e.g. an
+# NTFS/exFAT/fuseblk data drive).
 sdist:
 	python3 -m build
 
@@ -20,13 +23,13 @@ wheel:
 	python3 -m build --wheel
 
 rpm:
-	packaging/rpm/build-rpm.sh
+	bash packaging/rpm/build-rpm.sh
 
 deb:
-	packaging/deb/build-deb.sh
+	bash packaging/deb/build-deb.sh
 
 appimage:
-	packaging/appimage/build-appimage.sh
+	bash packaging/appimage/build-appimage.sh
 
 install:
 	python3 -m pip install '.[gui]'
