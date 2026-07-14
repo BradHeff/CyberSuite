@@ -1,5 +1,14 @@
 %global pypi_name cybersuite
 
+# The themed GUI needs ttkbootstrap, which Fedora does not package — users
+# install it via pip (into /usr/local/lib/.../site-packages or their user site).
+# Fedora's default `-sP` shebang flags isolate BOTH of those off sys.path, so the
+# installed launcher can't import ttkbootstrap and silently drops to the plain-ttk
+# fallback theme. Clearing the flags makes the launcher behave like
+# `python3 -m cybersuite`, so it finds a pip-installed ttkbootstrap. The GUI still
+# degrades gracefully when ttkbootstrap is absent.
+%global py3_shebang_flags %{nil}
+
 Name:           cybersuite
 Version:        1.0.0
 Release:        1%{?dist}
