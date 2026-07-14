@@ -55,6 +55,10 @@ falls back to CLI automatically if Tk is missing.
 sudo dnf install ./cybersuite-1.0.0-1.*.noarch.rpm
 cybersuite
 ```
+> The themed GUI needs `ttkbootstrap`, which Fedora does not package. For the
+> full theme, `pip install ttkbootstrap` — otherwise the GUI uses a plain-ttk
+> fallback (same palette). The **AppImage** bundles ttkbootstrap and is themed
+> out of the box.
 
 ### Debian / Ubuntu / Mint (DEB)
 ```bash

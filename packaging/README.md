@@ -26,6 +26,12 @@ make rpm            # -> ./cybersuite-1.0.0-1.<dist>.noarch.rpm
 sudo dnf install ./cybersuite-1.0.0-1.*.noarch.rpm
 ```
 
+> **Themed GUI on the RPM:** `ttkbootstrap` is not packaged for Fedora, so it
+> stays a soft `Recommends`. Users who want the full theme should
+> `pip install ttkbootstrap` (the spec clears the launcher's `-s` shebang flag so
+> a pip-installed copy in `/usr/local` or the user site is picked up). Without it,
+> the GUI uses the plain-ttk fallback. The AppImage bundles ttkbootstrap.
+
 Spec file: `packaging/rpm/cybersuite.spec`. It uses the modern
 `pyproject-rpm-macros`, pulls in `python3-tkinter` as a hard dependency, and
 recommends `python3-ttkbootstrap`. It also installs the `.desktop` entry and the
