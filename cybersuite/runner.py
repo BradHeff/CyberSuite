@@ -27,9 +27,9 @@ class ScanRunner:
                 self.ctx.log("Scan cancelled by user.")
                 break
             self.ctx.progress(-1.0, f"=== {check.title} ({idx + 1}/{total}) ===")
+            produced = []
             try:
                 produced = check.run() or []
-                self.findings.extend(produced)
             except Exception:  # never let one check kill the whole run
                 tb = traceback.format_exc(limit=3)
                 f = Finding(
@@ -42,6 +42,10 @@ class ScanRunner:
                 )
                 self.findings.append(f)
                 self.ctx.emit(f)
+            finally:
+                # A crashed check may have streamed findings already (its own
+                # list); keep whatever it produced instead of dropping them.
+                self.findings.extend(produced or check.findings)
 
         self.finished = time.time()
         self.ctx.progress(1.0, "Scan complete.")

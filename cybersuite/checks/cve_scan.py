@@ -17,8 +17,10 @@ from ..config import TLS_PORTS
 from ..model import Severity
 from .base import Check
 
-# Ports where an HTTP GET tends to yield a useful Server: header.
-_HTTP_PORTS = {80, 8000, 8080, 3000, 9000}
+# Ports where an HTTP GET tends to yield a useful Server: header. 8443 is
+# often a plain-HTTP redirect, so it gets the HEAD probe even though the
+# TLS audit also covers it.
+_HTTP_PORTS = {80, 8000, 8080, 3000, 8443, 9000}
 _HTTP_PROBE = b"HEAD / HTTP/1.0\r\nHost: scan\r\nUser-Agent: CyberSuite\r\n\r\n"
 
 
@@ -52,8 +54,7 @@ class CveScan(Check):
             for port in ports:
                 if self.cancelled():
                     return self.findings
-                # Skip pure-TLS ports for banner grabbing (handled by TLS audit);
-                # still probe 8443 lightly via plain read in case of redirect banners.
+                # Skip pure-TLS ports for banner grabbing (handled by TLS audit).
                 if port in TLS_PORTS and port not in _HTTP_PORTS:
                     continue
                 banner = self._banner_for(ip, port)

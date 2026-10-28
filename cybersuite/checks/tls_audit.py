@@ -18,10 +18,11 @@ _EXPIRY_WARN_DAYS = 30
 
 
 def _parse_cert_time(value: str) -> datetime.datetime | None:
-    # OpenSSL format e.g. 'Jun  1 12:00:00 2026 GMT'
+    # OpenSSL format e.g. 'Jun  1 12:00:00 2026 GMT' — always GMT, so the
+    # parsed naive time is tagged UTC to compare against an aware "now".
     for fmt in ("%b %d %H:%M:%S %Y %Z", "%b %d %H:%M:%S %Y GMT"):
         try:
-            return datetime.datetime.strptime(value, fmt)
+            return datetime.datetime.strptime(value, fmt).replace(tzinfo=datetime.timezone.utc)
         except ValueError:
             continue
     return None
@@ -79,7 +80,7 @@ class TlsAudit(Check):
                      detail="No TLS-capable open ports were discovered.")
             return self.findings
 
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         for ip, port in targets:
             if self.cancelled():
                 return self.findings

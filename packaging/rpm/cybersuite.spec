@@ -10,7 +10,7 @@
 %global py3_shebang_flags %{nil}
 
 Name:           cybersuite
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        One-click network security auditor (GUI + CLI)
 
@@ -72,5 +72,17 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 
 %changelog
+* Thu Oct 29 2026 Brad Heffernan <brad.heffernan83@outlook.com> - 1.0.1-1
+- Cancelled port scans and reverse-DNS sweeps stop instead of running out
+  queued probes.
+- Internal-subnet checks require the whole network to be internal, so a
+  prefix that also covers public space is refused.
+- Unprivileged nft/iptables failures report unknown firewall status instead
+  of a false "no firewall" finding.
+- UDP probe sockets are closed on timeout, reverse DNS no longer races the
+  process-wide socket timeout, and TLS certificate times compare as UTC.
+- Port 8443 is banner-probed as HTTP. Findings already produced by a check
+  are kept if that check later crashes.
+
 * Thu Jul 09 2026 Brad Heffernan <brad.heffernan83@outlook.com> - 1.0.0-1
 - Initial RPM packaging of CyberSuite.

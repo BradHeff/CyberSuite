@@ -84,6 +84,8 @@ class NetworkDiscovery(Check):
 
         detail_lines = []
         for ip in live:
+            if self.cancelled():
+                break
             host = netutil.reverse_dns(ip)
             tag = " (this machine)" if ip in my_ips else ""
             detail_lines.append(f"  {ip}{f'  {host}' if host else ''}{tag}")

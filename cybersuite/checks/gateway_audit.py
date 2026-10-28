@@ -8,7 +8,6 @@ APs — and are only enabled when the operator opts in via the GUI/CLI.
 Tests performed against the default gateway and internal hosts:
   * Insecure management planes (Telnet, cleartext HTTP admin, SNMP).
   * Default/guessable SNMP community strings (read-only GET, non-destructive).
-  * UPnP/SSDP exposure on the LAN.
   * Open recursive DNS resolvers (DNS amplification risk).
   * Reachable SMB/NetBIOS on the gateway (should never be open on a router).
 """
@@ -68,9 +67,11 @@ class GatewayAudit(Check):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.settimeout(self.ctx.tcp_timeout * 2)
-            s.sendto(packet, (ip, 161))
-            data, _ = s.recvfrom(2048)
-            s.close()
+            try:
+                s.sendto(packet, (ip, 161))
+                data, _ = s.recvfrom(2048)
+            finally:
+                s.close()
             # A response arriving at all means the community was accepted.
             printable = bytes(b if 32 <= b < 127 else 0x2E for b in data).decode("latin-1")
             return printable
@@ -90,9 +91,11 @@ class GatewayAudit(Check):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.settimeout(self.ctx.tcp_timeout * 2)
-            s.sendto(packet, (ip, 53))
-            data, _ = s.recvfrom(1024)
-            s.close()
+            try:
+                s.sendto(packet, (ip, 53))
+                data, _ = s.recvfrom(1024)
+            finally:
+                s.close()
             if len(data) < 8:
                 return False
             ancount = struct.unpack(">H", data[6:8])[0]

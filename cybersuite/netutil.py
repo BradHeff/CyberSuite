@@ -6,6 +6,7 @@ import ipaddress
 import socket
 import subprocess
 import sys
+import threading
 
 
 def is_windows() -> bool:
@@ -19,13 +20,16 @@ def local_ipv4_addresses() -> list[str]:
     # Trick: a UDP socket "connected" to a public IP reveals the outbound
     # interface address without sending any packets.
     for probe in ("8.8.8.8", "1.1.1.1", "192.168.1.1"):
+        s = None
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect((probe, 80))
             addrs.add(s.getsockname()[0])
-            s.close()
         except OSError:
             continue
+        finally:
+            if s is not None:
+                s.close()
 
     try:
         for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
@@ -92,16 +96,25 @@ def grab_banner(ip: str, port: int, timeout: float, send: bytes | None = None) -
         return ""
 
 
+_dns_lock = threading.Lock()
+
+
 def reverse_dns(ip: str, timeout: float = 1.0) -> str:
-    """Return a hostname for an IP, or '' if none resolves."""
-    old = socket.getdefaulttimeout()
-    try:
-        socket.setdefaulttimeout(timeout)
-        return socket.gethostbyaddr(ip)[0]
-    except (OSError, socket.herror):
-        return ""
-    finally:
-        socket.setdefaulttimeout(old)
+    """Return a hostname for an IP, or '' if none resolves.
+
+    The resolver has no per-call timeout, so the default socket timeout is
+    swapped briefly — a process-global side effect. The lock keeps two
+    concurrent scans from racing the swap/restore.
+    """
+    with _dns_lock:
+        old = socket.getdefaulttimeout()
+        try:
+            socket.setdefaulttimeout(timeout)
+            return socket.gethostbyaddr(ip)[0]
+        except (OSError, socket.herror):
+            return ""
+        finally:
+            socket.setdefaulttimeout(old)
 
 
 def ping(ip: str, timeout_ms: int = 700) -> bool:

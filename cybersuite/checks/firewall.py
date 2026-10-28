@@ -53,7 +53,8 @@ class FirewallAudit(Check):
             self.add("firewalld is running", Severity.INFO, detail=out.strip())
             return
 
-        # nftables / iptables fallback: any rules at all?
+        # nftables / iptables fallback: any rules at all? These need root —
+        # a permission failure must read as "unknown", not "no firewall".
         rc, out = netutil.run_cmd(["nft", "list", "ruleset"])
         if rc == 0 and out.strip():
             self.add("nftables ruleset present", Severity.INFO,
@@ -72,6 +73,7 @@ class FirewallAudit(Check):
                          recommendation="Enable ufw or firewalld and default-deny inbound.")
             return
 
-        self.add("No host firewall detected", Severity.MEDIUM,
-                 detail="Could not find ufw, firewalld, nftables, or iptables rules.",
-                 recommendation="Install and enable a host firewall (ufw is simplest on Debian/Ubuntu).")
+        self.add("Firewall status unknown (no root)", Severity.LOW,
+                 detail="Neither nftables nor iptables rules could be read — this needs root. "
+                        "ufw/firewalld were not detected either. Check manually with: sudo nft list ruleset",
+                 recommendation="Verify a host firewall is enabled: sudo ufw status or sudo firewall-cmd --state.")

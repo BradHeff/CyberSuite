@@ -1,3 +1,13 @@
+cybersuite (1.0.1) unstable; urgency=medium
+
+  * Stop cancelled scans from running queued probes to timeout.
+  * Require a subnet to be entirely internal before scanning it.
+  * Report unprivileged firewall checks as unknown instead of "no firewall".
+  * Close UDP probe sockets, serialise reverse-DNS timeouts, and compare TLS
+    dates as UTC. Keep findings when a check crashes. Probe port 8443 as HTTP.
+
+ -- Brad Heffernan <brad.heffernan83@outlook.com>  Thu, 29 Oct 2026 09:50:00 +1030
+
 cybersuite (1.0.0) unstable; urgency=medium
 
   * Initial release.

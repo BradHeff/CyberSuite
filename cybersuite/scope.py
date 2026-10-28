@@ -24,11 +24,22 @@ def is_internal_ip(ip: str) -> bool:
 
 
 def is_internal_subnet(cidr: str) -> bool:
+    """True only when the ENTIRE network is internal space.
+
+    Containment is whole-network: a CIDR whose first address is private but
+    which spans past the private block (10.0.0.0/7 reaches the public
+    11.0.0.0/8) must be refused, not judged by its network address alone.
+    The network-level ``is_private``/``is_loopback``/``is_link_local``
+    properties already test whole-network containment; CGNAT (100.64/10) is
+    not in Python's private list, so it is checked explicitly, IPv4-only.
+    """
     try:
         net = ipaddress.ip_network(cidr, strict=False)
     except ValueError:
         return False
-    return is_internal_ip(str(net.network_address))
+    if net.is_private or net.is_loopback or net.is_link_local:
+        return True
+    return net.version == 4 and net.subnet_of(ipaddress.ip_network("100.64.0.0/10"))
 
 
 def filter_internal(targets: list[str]) -> tuple[list[str], list[str]]:

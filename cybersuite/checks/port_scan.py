@@ -39,6 +39,11 @@ class PortScan(Check):
         self.log(f"scanning {len(ports)} ports on {len(hosts)} host(s) = {total} probes")
 
         def probe(job):
+            # A cancelled scan must stop quickly: without this check every
+            # already-submitted probe still runs to its connect timeout and
+            # shutdown(wait=True) pins the worker for minutes.
+            if self.cancelled():
+                return job, False
             ip, port = job
             return job, netutil.tcp_connect(ip, port, self.ctx.tcp_timeout)
 
